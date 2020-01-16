@@ -1,37 +1,45 @@
-import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../_services/auth.service';
-import { AlertifyService } from '../_services/alertify.service';
+import { Component, OnInit } from "@angular/core";
+import { AuthService } from "../_services/auth.service";
+import { AlertifyService } from "../_services/alertify.service";
+import { Route, Router } from "@angular/router";
 
 @Component({
-  selector: 'app-nav',
-  templateUrl: './nav.component.html',
-  styleUrls: ['./nav.component.css']
+  selector: "app-nav",
+  templateUrl: "./nav.component.html",
+  styleUrls: ["./nav.component.css"]
 })
 export class NavComponent implements OnInit {
   model: any = {};
 
-  constructor(public authService: AuthService, private alertify: AlertifyService) { }
+  constructor(
+    public authService: AuthService,
+    private alertify: AlertifyService,
+    private router: Router
+  ) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   login() {
-    this.authService.login(this.model).subscribe(next => {
-      this.alertify.success("logged in successfully"); // alertify metodo smo naredili v _services
-    },
+    this.authService.login(this.model).subscribe(
+      next => {
+        this.alertify.success("logged in successfully"); // alertify metodo smo naredili v _services
+      },
       error => {
         this.alertify.error(error);
+      },
+      () => {
+        this.router.navigate(["/members"]); // če prav razumem se to pokliče v obeh primerih pri next in pri error
       }
     );
   }
 
-  loggedIn(){
-    return this.authService.loggedIn(); 
+  loggedIn() {
+    return this.authService.loggedIn();
   }
 
-  logout(){
-    localStorage.removeItem('token');
+  logout() {
+    localStorage.removeItem("token");
     this.alertify.message("logged out");
+    this.router.navigate(["/home"]);
   }
-
 }
