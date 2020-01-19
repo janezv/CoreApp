@@ -12,10 +12,11 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace DatingApp.API.Controllers
 {
+    // link: host /api/Auth
     [Route("api/[controller]")]
     [ApiController]
 
-    
+
     public class AuthController : ControllerBase
     {
 
@@ -31,10 +32,10 @@ namespace DatingApp.API.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody]UserForRegisterDto userForRegisterDto)
         {
-           
-           userForRegisterDto.Username = userForRegisterDto.Username.ToLower();
-           
-            if( await _repo.UserExists(userForRegisterDto.Username))
+
+            userForRegisterDto.Username = userForRegisterDto.Username.ToLower();
+
+            if (await _repo.UserExists(userForRegisterDto.Username))
                 return BadRequest("Username already Exists");
 
             var userToCreate = new User
@@ -51,12 +52,12 @@ namespace DatingApp.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody]UserForLoginDto userForLoginDto)
         {
-            
+
             // throw new Exception("Computer says no!");
 
             var userFromRepo = await _repo.Login(userForLoginDto.Username.ToLower(), userForLoginDto.Password);
 
-            if( userFromRepo == null )
+            if (userFromRepo == null)
                 return Unauthorized();
 
             var claim = new[]
@@ -67,7 +68,7 @@ namespace DatingApp.API.Controllers
 
             var key = new SymmetricSecurityKey(Encoding.UTF8
             .GetBytes(_config.GetSection("AppSettings:Token").Value));
-                                            
+
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -81,11 +82,12 @@ namespace DatingApp.API.Controllers
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
-            return Ok( new {
+            return Ok(new
+            {
                 token = tokenHandler.WriteToken(token)
             });
         }
 
-        
+
     }
 }

@@ -34,20 +34,26 @@ namespace DatingApp.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DataContext>( x => x.UseSqlite
-            (Configuration.GetConnectionString("DefaultConnection")));                                                  
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddDbContext<DataContext>(x => x.UseSqlite
+           (Configuration.GetConnectionString("DefaultConnection")));
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+                .AddJsonOptions(opt =>
+                {
+                    opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                });
             services.AddCors();
             services.AddScoped<IAuthRepository, AuthRepository>(); // dodaj k projektu repozitori
+            services.AddScoped<IDatingRepository, DatingRepository>(); // dodaj k projektu repozitori
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme) // v tem servisu damo controllerjem token, da ve kaj preverjat, dodamo še nekaj drugih nastavitev
-                .AddJwtBearer(options => {
+                .AddJwtBearer(options =>
+                {
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII
                             .GetBytes(Configuration.GetSection("AppSettings:Token").Value)),
                         ValidateIssuer = false, //to je server to je localhost
-                        ValidateAudience = false 
+                        ValidateAudience = false
                     };
                 });
         }
@@ -61,12 +67,14 @@ namespace DatingApp.API
             }
             else
             {
-                app.UseExceptionHandler( builder => {
-                    builder.Run(async context => {
+                app.UseExceptionHandler(builder =>
+                {
+                    builder.Run(async context =>
+                    {
                         context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-                        var error= context.Features.Get<IExceptionHandlerFeature>();
-                        if(error != null)
+                        var error = context.Features.Get<IExceptionHandlerFeature>();
+                        if (error != null)
                         {
                             context.Response.AddApplicationError(error.Error.Message);
                             await context.Response.WriteAsync(error.Error.Message);
@@ -77,7 +85,7 @@ namespace DatingApp.API
                 // app.UseHsts();
             }
 
-            /* app.UseHttpsRedirection();  */ 
+            /* app.UseHttpsRedirection();  */
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseAuthentication();
             app.UseMvc();
