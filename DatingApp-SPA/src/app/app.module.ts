@@ -2,7 +2,8 @@ import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
 import { HttpClientModule } from "@angular/common/http";
 import { FormsModule } from "@angular/forms";
-import { BsDropdownModule } from "ngx-bootstrap/dropdown"; // bootstrap dropdown
+import { BsDropdownModule } from "ngx-bootstrap"; // bootstrap dropdown
+import { TabsModule } from "ngx-bootstrap/tabs";
 import { RouterModule } from "@angular/router";
 import { JwtModule } from "@auth0/angular-jwt";
 
@@ -42,6 +43,7 @@ export function tokenGetter() {
     FormsModule,
     BsDropdownModule.forRoot(), //importdropdownbootstrap\\\\\\\\\\\\\\\\nimportMemberListComponentfrom'./member-list/member-list.component';
     RouterModule.forRoot(appRoutes), // v oklepajih-argument je naš file z potmi
+    TabsModule.forRoot(),
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,
