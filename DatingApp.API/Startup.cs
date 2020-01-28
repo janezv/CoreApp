@@ -20,6 +20,7 @@ using System.Net;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using DatingApp.API.Helpers;
+using AutoMapper;
 
 namespace DatingApp.API
 {
@@ -42,6 +43,7 @@ namespace DatingApp.API
                     opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
                 });
             services.AddCors();
+            services.AddAutoMapper(typeof(DatingRepository).Assembly);
             services.AddScoped<IAuthRepository, AuthRepository>(); // dodaj k projektu repozitori
             services.AddScoped<IDatingRepository, DatingRepository>(); // dodaj k projektu repozitori
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme) // v tem servisu damo controllerjem token, da ve kaj preverjat, dodamo še nekaj drugih nastavitev
