@@ -32,7 +32,7 @@ namespace DatingApp.API.Controllers
             return Ok(usersToReturn);
         }
 
-        // link: hostIP /api/Users /2   -- ker ni [Route]
+        // link: hostIP /api/Users/4   -- ker ni [Route]
         [HttpGet("{id}")]
         public async Task<IActionResult> getUser(int id)
         {
