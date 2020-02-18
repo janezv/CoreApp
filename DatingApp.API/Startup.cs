@@ -90,7 +90,18 @@ namespace DatingApp.API
             /* app.UseHttpsRedirection();  */
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseAuthentication();
-            app.UseMvc();
+            app.UseDefaultFiles(); //serve index
+            app.UseStaticFiles(); // serv a static file
+            app.UseMvc(routes =>  // kater kontroler se naj pokliče, če URL "ustreli v prazno
+               routes.MapSpaFallbackRoute(
+                   name: "spa-fallback",
+                   defaults: new
+                   {
+                       Controller = "Fallback",
+                       action = "Index"
+                   }
+               )
+            );
         }
     }
 }
